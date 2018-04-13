@@ -14,11 +14,34 @@ public class UserDetailsDaoImp implements UserDetailsDao {
 
     @Override
     public Account findUserByUsername(String username) {
-        String sql = "SELECT * FROM accounts ac INNER JOIN authorities au ON ac.account_id = au.account_id WHERE ac.username = :username";
-        Account acc = sessionFactory.getCurrentSession()
-                .createNativeQuery(sql, Account.class)
-                .setParameter("username", username)
-                .uniqueResult();
-        return acc;
+        return findAccountByUsernameNamedQuery(username);
+    }
+
+    /**
+     * get an account by username using NamedQuery
+     * Account.class -> hqlFindAccountByUsername
+     * @param username
+     * @return account
+     */
+    private Account findAccountByUsernameNamedQuery(String username) {
+        Account account = sessionFactory.getCurrentSession()
+            .createNamedQuery("hqlFindAccountByUsername", Account.class)
+            .setParameter("username", username)
+            .getSingleResult();
+        return account;
+    }
+
+    /**
+     * get an account by username using NamedNativeQuery
+     * Account.class -> sqlFindAccountByUsername
+     * @param username
+     * @return account
+     */
+    private Account findAccountByUsernameNamedNativeQuery(String username) {
+        Account account = (Account) sessionFactory.getCurrentSession()
+            .getNamedNativeQuery("sqlFindAccountByUsername")
+            .setParameter("username", username)
+            .getSingleResult();
+        return account;
     }
 }

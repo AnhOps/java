@@ -5,6 +5,19 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+@NamedQueries({
+    @NamedQuery(
+        name = "hqlFindAccountByUsername",
+        query = "FROM Account ac WHERE ac.username = :username"
+    )
+})
+@NamedNativeQueries({
+    @NamedNativeQuery(
+        name = "sqlFindAccountByUsername",
+        query = "SELECT * FROM accounts ac INNER JOIN authorities au ON ac.account_id = au.account_id WHERE ac.username = :username",
+        resultClass = Account.class
+    )
+})
 @Entity
 @Table(name = "accounts")
 public class Account {
